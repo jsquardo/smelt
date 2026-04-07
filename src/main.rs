@@ -1,7 +1,7 @@
 mod parser;
-use crate::parser::parse_imports;
+use crate::parser::build_graph;
 
 fn main() {
-    let imports = parse_imports("src/index.js");
+    let imports = build_graph("src/index.js");
     println!("{:?}", imports);
 }

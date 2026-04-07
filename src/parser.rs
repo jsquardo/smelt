@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 pub fn resolve_path(current_file: &str, import_path: &str) -> String {
     let base = std::path::PathBuf::from(current_file);
     let dir = base.parent().unwrap();
@@ -20,4 +22,21 @@ pub fn parse_imports(file_path: &str) -> Vec<String> {
         }
     }
     paths
+}
+
+pub fn build_graph(entry: &str) -> HashMap<String, Vec<String>> {
+    let mut graph: HashMap<String, Vec<String>> = HashMap::new();
+    let mut to_visit: Vec<String> = vec![entry.to_string()];
+
+    while let Some(file) = to_visit.pop() {
+        if graph.contains_key(&file) {
+            continue;
+        }
+        let imports = parse_imports(&file);
+        for import in &imports {
+            to_visit.push(import.clone());
+        }
+        graph.insert(file, imports);
+    }
+    graph
 }
